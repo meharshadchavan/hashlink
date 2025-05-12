@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HashLink - Harshad Chavan's Profile Hub</title><body>
+
+    <h1 style="
+        font-size: 3em;
+        text-align: center;
+        color: transparent; 
+        background-clip: text;
+        -webkit-background-clip: text;
+        background-image: linear-gradient(45deg, #f06, #f60);
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+        animation: glow 2s ease-in-out infinite alternate,
+                   move 4s linear infinite; /* Added movement animation */
+    ">HashLink</h1> 
+
+    <style>
+        @keyframes glow {
+            from {
+                text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            }
+            to {
+                text-shadow: 2px 2px 10px rgba(255,255,255,0.8);
+            }
+        }
+
+        @keyframes move { /* Defines the movement animation */
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+</body> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Theme Variables (Same as before) --- */
+        :root {
+            /* Light Mode (Default) */
+            --bg-primary: #f3f4f6; --bg-secondary: #ffffff; --bg-card: #ffffff;
+            --text-primary: #1f2937; --text-secondary: #4b5563; --text-accent: #4f46e5;
+            --border-primary: #e5e7eb; --border-secondary: #d1d5db; --border-accent: #6366f1;
+            --shadow-color: rgba(99, 102, 241, 0.2);
+            --modal-bg: #ffffff; --modal-text: #1f2937; --modal-subtext: #4b5563;
+            --svg-x-color: #1f2937; --svg-github-color: #1f2937;
+            --theme-toggle-bg: #e5e7eb; --theme-toggle-icon: #4b5563;
+            --bg-gradient: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            --gradient-start: #a78bfa; --gradient-end: #ec4899;
+            --dynamic-graphic-color: rgba(209, 213, 219, 0.3); /* gray-300 with alpha */
+        }
+
+        .dark {
+            /* Dark Mode */
+            --bg-primary: #111827; --bg-secondary: #1f2937; --bg-card: #1f2937;
+            --text-primary: #f9fafb; --text-secondary: #9ca3af; --text-accent: #818cf8;
+            --border-primary: #374151; --border-secondary: #4b5563; --border-accent: #6366f1;
+            --shadow-color: rgba(99, 102, 241, 0.3);
+            --modal-bg: #1f2937; --modal-text: #f9fafb; --modal-subtext: #9ca3af;
+            --svg-x-color: #f9fafb; --svg-github-color: #f9fafb;
+            --theme-toggle-bg: #374151; --theme-toggle-icon: #d1d5db;
+            --bg-gradient: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            --gradient-start: #8b5cf6; --gradient-end: #ec4899;
+            --dynamic-graphic-color: rgba(55, 65, 81, 0.3); /* gray-600 with alpha */
+        }
+
+        /* --- Base Styles (Apply Variables) --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: var(--bg-gradient);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        .main-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            position: relative; z-index: 1; overflow: hidden;
+        }
+        .main-container::before { /* Animated Gradient Border */
+            content: ''; position: absolute; inset: -2px;
+            z-index: -1; border-radius: inherit;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            animation: rotateGradient 5s linear infinite;
+        }
+        @keyframes rotateGradient { /* Gradient Animation */
+            0% { background-position: 0% 50%; background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end), var(--gradient-start)); background-size: 200% 100%;}
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Profile Card Enhancements --- */
+        .profile-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.5s ease; /* Added opacity transition */
+            cursor: pointer;
+            opacity: 0; transform: translateY(20px);
+        }
+        .profile-card.visible { /* Entrance Animation */
+             opacity: 1; transform: translateY(0);
+        }
+        .profile-card:hover { /* Hover Effect */
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 10px 25px -3px var(--shadow-color), 0 4px 15px -2px var(--shadow-color);
+            border-color: var(--border-accent);
+        }
+        /* Click "Pop" Animation State */
+        .profile-card.active {
+            transform: scale(0.96); /* Slightly shrink */
+            transition: transform 0.15s ease-out; /* Faster pop transition */
+            border-color: var(--border-accent);
+             box-shadow: 0 5px 15px -3px var(--shadow-color); /* Less shadow when popped */
+        }
+
+        /* --- Modal Enhancements --- */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px); /* Add blur effect */
+            display: flex; align-items: center; justify-content: center;
+            z-index: 50;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s linear 0.3s, backdrop-filter 0.3s ease; /* Added backdrop transition */
+        }
+        .modal-overlay.active {
+            opacity: 1; visibility: visible;
+            transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+        }
+        .modal-content {
+            background-color: var(--modal-bg);
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-xl */
+            border: 1px solid var(--border-primary);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+            max-width: 90%; width: 500px;
+            position: relative; /* Needed for pseudo-element */
+            overflow: hidden; /* Clip the pseudo-element */
+            /* Enhanced Transition: Slide up + Fade in */
+            transform: translateY(20px) scale(0.98);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease-out;
+        }
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* Dynamic Animated Background for Modal */
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 200%; height: 200%; /* Make it larger for movement */
+            background-image:
+                linear-gradient(45deg, var(--dynamic-graphic-color) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--dynamic-graphic-color) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--dynamic-graphic-color) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--dynamic-graphic-color) 75%);
+            background-size: 20px 20px; /* Size of the pattern */
+            z-index: 0; /* Behind the content */
+            opacity: 0.3; /* Subtle effect */
+            animation: moveBackground 40s linear infinite;
+        }
+        .modal-content > * { position: relative; z-index: 1; } /* Ensure content is above pseudo-element */
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-50%, -50%); } /* Move diagonally */
+            100% { transform: translate(0, 0); }
+        }
+
+        /* --- Other Styles (Theme Toggle, Icons, Footer - mostly unchanged) --- */
+        .profile-image { object-fit: cover; object-position: center; border-color: var(--border-accent); }
+        .caption { color: var(--text-accent); }
+        .profile-title { color: var(--text-primary); }
+        .profile-description { color: var(--text-secondary); }
+        .modal-close-button { color: var(--text-secondary); position: relative; z-index: 2; } /* Ensure close button is clickable */
+        .modal-close-button:hover { color: var(--text-primary); }
+        #modalTitle { color: var(--modal-text); }
+        #modalDescription { color: var(--modal-subtext); }
+        #modalLink { background-color: var(--text-accent); color: var(--bg-secondary); }
+        #modalLink:hover { filter: brightness(1.1); }
+        .modal-content .icon-website { color: #6366f1; } .modal-content .icon-blog { color: #8b5cf6; }
+        .modal-content .icon-instagram { color: #ec4899; } .modal-content .icon-youtube { color: #ef4444; }
+        .modal-content .icon-linkedin { color: #3b82f6; } .modal-content .icon-x-svg { color: var(--svg-x-color); }
+        .modal-content .icon-github { color: var(--svg-github-color); } .modal-content .icon-gdev { color: #10b981; }
+        .modal-content .icon-cloudskills { color: #0ea5e9; } .modal-content .icon-whatsapp { color: #22c55e; }
+        .modal-content .icon-email { color: #f97316; }
+        .theme-toggle-button { background-color: var(--theme-toggle-bg); color: var(--theme-toggle-icon); border-radius: 9999px; padding: 0.5rem; font-size: 1.25rem; line-height: 1; transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease; }
+        .theme-toggle-button:hover { transform: scale(1.1); filter: brightness(1.1); }
+        .theme-toggle-button .fa-sun { display: none; } .theme-toggle-button .fa-moon { display: inline-block; }
+        .dark .theme-toggle-button .fa-sun { display: inline-block; } .dark .theme-toggle-button .fa-moon { display: none; }
+        .icon-x-svg { color: var(--svg-x-color); } .icon-github { color: var(--svg-github-color); }
+        .footer-text { color: var(--text-secondary); }
+        .footer-subtext { color: color-mix(in srgb, var(--text-secondary) 70%, transparent); }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6">
+
+    <button id="themeToggle" title="Toggle Theme" class="theme-toggle-button fixed top-4 right-4 z-50">
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="main-container w-full max-w-4xl shadow-2xl rounded-xl p-6 sm:p-10 relative">
+        <header class="text-center mb-10 sm:mb-14">
+             <img src="https://www.harshadchavan.com/site/wp-content/uploads/2024/04/Harshad-Chavan-HashLink.webp"
+                 alt="Harshad Chavan"
+                 class="profile-image w-28 h-28 sm:w-36 sm:h-36 rounded-full mx-auto mb-5 border-4 shadow-lg"
+                 onerror="this.onerror=null; this.src='https://placehold.co/144x144/6366f1/ffffff?text=HASHLINK';">
+            <div class="flex justify-center items-center gap-3 mb-1">
+                 <h1 class="text-3xl sm:text-4xl font-extrabold profile-title">Harshad Chavan</h1>
+                 <span class="text-xl sm:text-2xl font-bold text-clip-text bg-gradient-to-r from-[var(--gradient-start)] to-[var(--gradient-end)]">HashLink</span>
+            </div>
+            <p class="caption mt-1 text-sm sm:text-base font-medium">.</p>
+            <p class="profile-description mt-3 text-sm sm:text-base max-w-xl mx-auto">Connecting all profiles at one place.
+
+ Click on card to visit.</p>
+        </header>
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://www.harshadchavan.com" data-title="Website"
+                 data-description="My personal and professional website showcasing projects, services, and more."
+                 data-icon='<i class="fas fa-globe fa-2x mb-3 icon-website"></i>'>
+                <i class="fas fa-globe fa-2x mb-3 icon-website"></i>
+                <span class="profile-title font-semibold text-lg mb-1">Website</span>
+                <p class="profile-description text-xs">Personal & Professional Site</p>
+            </div>
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="http://blog.harshadchavan.com" data-title="Blog"
+                 data-description="Insights, articles, and updates on AI, technology, and development."
+                 data-icon='<i class="fas fa-blog fa-2x mb-3 icon-blog"></i>'>
+                <i class="fas fa-blog fa-2x mb-3 icon-blog"></i>
+                <span class="profile-title font-semibold text-lg mb-1">Blog</span>
+                <p class="profile-description text-xs">Tech Insights & Articles</p>
+            </div>
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://www.instagram.com/meharshadchavan" data-title="Instagram"
+                 data-description="Sharing visual snippets from my professional life, events, and interests."
+                 data-icon='<i class="fab fa-instagram fa-2x mb-3 icon-instagram"></i>'>
+                <i class="fab fa-instagram fa-2x mb-3 icon-instagram"></i>
+                <span class="profile-title font-semibold text-lg mb-1">Instagram</span>
+                <p class="profile-description text-xs">Visual Updates & Stories</p>
+            </div>
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://youtube.com/@meharshadchavan" data-title="YouTube"
+                 data-description="My channel for tutorials, talks, and discussions on AI and technology."
+                 data-icon='<i class="fab fa-youtube fa-2x mb-3 icon-youtube"></i>'>
+                <i class="fab fa-youtube fa-2x mb-3 icon-youtube"></i>
+                <span class="profile-title font-semibold text-lg mb-1">YouTube</span>
+                <p class="profile-description text-xs">Tutorials & Tech Talks</p>
+            </div>
+             <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://www.linkedin.com/in/meharshadchavan" data-title="LinkedIn"
+                 data-description="Connect with me professionally, view my experience, and network."
+                 data-icon='<i class="fab fa-linkedin-in fa-2x mb-3 icon-linkedin"></i>'>
+                <i class="fab fa-linkedin-in fa-2x mb-3 icon-linkedin"></i>
+                <span class="profile-title font-semibold text-lg mb-1">LinkedIn</span>
+                <p class="profile-description text-xs">Professional Network</p>
+            </div>
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://x.com/meharshadchavan" data-title="X (Twitter)"
+                 data-description="Follow my thoughts, news, and quick updates on X."
+                 data-icon='<svg class="icon-x-svg w-6 h-6 mb-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'>
+                <svg class="icon-x-svg w-6 h-6 mb-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                <span class="profile-title font-semibold text-lg mb-1">X (Twitter)</span>
+                <p class="profile-description text-xs">Thoughts & News</p>
+            </div>
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://github.com/meharshadchavan" data-title="GitHub"
+                 data-description="Explore my code repositories, projects, and contributions."
+                 data-icon='<i class="fab fa-github fa-2x mb-3 icon-github"></i>'>
+                <i class="fab fa-github fa-2x mb-3 icon-github"></i>
+                <span class="profile-title font-semibold text-lg mb-1">GitHub</span>
+                <p class="profile-description text-xs">Code & Projects</p>
+            </div>
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://g.dev/harshadchavan" data-title="Google Developer"
+                 data-description="My Google Developer profile highlighting skills and contributions."
+                 data-icon='<svg class="w-8 h-8 mb-3 icon-gdev" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>'>
+                 <svg class="w-8 h-8 mb-3 icon-gdev" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                <span class="profile-title font-semibold text-lg mb-1">Google Developer</span>
+                <p class="profile-description text-xs">Developer Profile</p>
+            </div>
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://www.cloudskillsboost.google/public_profiles/dc8f08cb-6aac-40a2-8c0e-33a69a5e02fa" data-title="Cloud Skills Boost"
+                 data-description="My verified Google Cloud skills and learning achievements."
+                 data-icon='<i class="fas fa-cloud-upload-alt fa-2x mb-3 icon-cloudskills"></i>'>
+                <i class="fas fa-cloud-upload-alt fa-2x mb-3 icon-cloudskills"></i>
+                <span class="profile-title font-semibold text-lg mb-1">Cloud Skills Boost</span>
+                <p class="profile-description text-xs">Google Cloud Skills</p>
+            </div>
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://whatsapp.com/channel/0029Va4FALi1yT2Httj5570h" data-title="WhatsApp Channel"
+                 data-description="Join my WhatsApp channel for exclusive updates and content."
+                 data-icon='<i class="fab fa-whatsapp fa-2x mb-3 icon-whatsapp"></i>'>
+                <i class="fab fa-whatsapp fa-2x mb-3 icon-whatsapp"></i>
+                <span class="profile-title font-semibold text-lg mb-1">WhatsApp Channel</span>
+                <p class="profile-description text-xs">Updates & Content</p>
+            </div>
+            <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="https://api.whatsapp.com/send?phone=919356733531&text=HeyThere" data-title="Message on WhatsApp"
+                 data-description="Send me a direct message on WhatsApp."
+                 data-icon='<i class="fab fa-whatsapp-square fa-2x mb-3 icon-whatsapp"></i>'>
+                <i class="fab fa-whatsapp-square fa-2x mb-3 icon-whatsapp"></i>
+                <span class="profile-title font-semibold text-lg mb-1">Message on WhatsApp</span>
+                <p class="profile-description text-xs">Direct Message</p>
+            </div>
+             <div class="profile-card p-5 rounded-lg flex flex-col items-center text-center"
+                 data-url="mailto:meharshadchavan@gmail.com" data-title="Email Me"
+                 data-description="Reach out via email for inquiries or collaborations."
+                 data-icon='<i class="fas fa-envelope fa-2x mb-3 icon-email"></i>'>
+                <i class="fas fa-envelope fa-2x mb-3 icon-email"></i>
+                <span class="profile-title font-semibold text-lg mb-1">Email Me</span>
+                <p class="profile-description text-xs">Inquiries & Collaborations</p>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 sm:mt-16 pt-8 border-t border-[var(--border-primary)]">
+             <p class="footer-text text-sm">
+                 <span class="font-semibold text-clip-text bg-gradient-to-r from-[var(--gradient-start)] to-[var(--gradient-end)]">HashLink</span> | © <span id="currentYear"></span> Harshad Chavan
+             </p>
+             <p class="footer-subtext text-xs mt-1">Connecting Profiles Creatively</p>
+        </footer>
+    </div>
+
+    <div id="profileModal" class="modal-overlay">
+        <div class="modal-content relative"> <button id="closeModal" class="modal-close-button absolute top-3 right-4 text-2xl">×</button>
+            <div id="modalIcon" class="text-center mb-4 relative z-10"></div>
+            <h3 id="modalTitle" class="text-2xl font-bold text-center mb-2 relative z-10"></h3>
+            <p id="modalDescription" class="text-center mb-6 relative z-10"></p>
+            <div class="text-center relative z-10">
+                 <a id="modalLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-block font-semibold py-2 px-6 rounded-lg transition duration-200">
+                    Visit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Theme Toggle Logic (Unchanged) ---
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const body = document.body;
+        const applyTheme = (theme) => { body.classList.toggle('dark', theme === 'dark'); };
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+        applyTheme(currentTheme);
+        themeToggleBtn.addEventListener('click', () => {
+            currentTheme = body.classList.toggle('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+        });
+
+        // --- Modal Logic (Updated for Click Animation) ---
+        const modal = document.getElementById('profileModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalLink = document.getElementById('modalLink');
+        const closeModalBtn = document.getElementById('closeModal');
+        const profileCards = document.querySelectorAll('.profile-card');
+        let activeCard = null; // Keep track of the clicked card
+
+        function openModal(card) {
+            // Apply 'active' class for the pop animation
+            card.classList.add('active');
+            activeCard = card; // Store the reference
+
+            // Get data from the clicked card
+            const url = card.dataset.url;
+            const title = card.dataset.title;
+            const description = card.dataset.description;
+            const iconHtml = card.dataset.icon;
+
+            // Populate modal content (same as before)
+            modalIcon.innerHTML = iconHtml;
+            const iconElement = modalIcon.querySelector('i, svg');
+            if (iconElement) {
+                iconElement.classList.remove('fa-2x', 'mb-3', 'w-6', 'h-6', 'w-8', 'h-8');
+                if(iconElement.tagName.toLowerCase() === 'svg') {
+                     iconElement.classList.add('w-10', 'h-10', 'mb-4');
+                 } else {
+                     iconElement.classList.add('fa-3x', 'mb-4');
+                 }
+            }
+            modalTitle.textContent = title;
+            modalDescription.textContent = description;
+            modalLink.href = url;
+            modalLink.innerHTML = `Visit ${title}`;
+
+            // Delay showing the modal slightly to let the pop animation play
+            setTimeout(() => {
+                modal.classList.add('active'); // Show the modal
+            }, 150); // 150ms delay - adjust as needed
+        }
+
+        function closeModal() {
+            modal.classList.remove('active'); // Hide the modal
+            // Remove 'active' class from the card after modal starts closing
+            if (activeCard) {
+                 // Optional: Delay removal slightly for smoother visual transition
+                 setTimeout(() => {
+                    activeCard.classList.remove('active');
+                    activeCard = null; // Clear the reference
+                 }, 100); // Small delay
+            }
+        }
+
+        // Add event listeners to profile cards
+        profileCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Prevent opening multiple modals if clicked rapidly
+                if (!modal.classList.contains('active')) {
+                    openModal(card);
+                }
+            });
+        });
+
+        // Close modal listeners (unchanged)
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) { closeModal(); }
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.classList.contains('active')) { closeModal(); }
+        });
+
+        // --- Footer Year (unchanged) ---
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // --- Card Entrance Animation (unchanged) ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                         entry.target.classList.add('visible');
+                    }, index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        profileCards.forEach(card => { observer.observe(card); });
+
+    </script>
+</body>
+</html>
